@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload a Site</title>
+</head>
+<body>
+  <h1>Publish Your Site</h1>
+  <input id="domain" placeholder="domain name"><br>
+  <input id="password" placeholder="password"><br>
+  <textarea id="code" rows="10" cols="50" placeholder="site code here"></textarea><br>
+  <button onclick="upload()">Upload</button>
+  <p id="status"></p>
+
+  <script>
+    async function upload() {
+      const domain = document.getElementById("domain").value;
+      const password = document.getElementById("password").value;
+      const code = document.getElementById("code").value;
+
+      const response = await fetch("http://localhost:5000/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ domain, password, code })
+      });
+
+      const status = document.getElementById("status");
+      if (response.ok) {
+        status.textContent = "Site uploaded!";
+      } else {
+        status.textContent = await response.text();
+      }
+    }
+  </script>
+</body>
+</html>
