@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mini Web</title>
+  <style>
+    body { font-family: sans-serif; }
+    .image { max-width: 300px; }
+  </style>
+</head>
+<body>
+  <h1>Mini Browser</h1>
+  <input id="domain" placeholder="Enter domain">
+  <button onclick="loadSite()">Go</button>
+  <div id="site"></div>
+
+  <script>
+    async function loadSite() {
+      const domain = document.getElementById("domain").value;
+      const out = document.getElementById("site");
+      out.innerHTML = "";
+
+      const res = await fetch("http://localhost:5000/get?domain=" + encodeURIComponent(domain));
+      const text = await res.text();
+      const lines = text.split("\n");
+
+      for (const line of lines) {
+        const [command, value] = line.split("\\");
+        if (command === "header") {
+          const h = document.createElement("h2");
+          h.textContent = value;
+          out.appendChild(h);
+        } else if (command === "image") {
+          const img = document.createElement("img");
+          img.src = value;
+          img.className = "image";
+          out.appendChild(img);
+        } else if (command === "caption") {
+          const p = document.createElement("p");
+          p.textContent = value;
+          out.appendChild(p);
+        } else if (command === "text") {
+          const p = document.createElement("p");
+          p.textContent = value;
+          out.appendChild(p);
+        }
+      }
+    }
+  </script>
+</body>
+</html>
